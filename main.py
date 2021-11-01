@@ -3,7 +3,7 @@
 # CURRENT FEATURES ARE ABILITY TO RAISE AND LOWER HP VALUES
 # WHEN HP REACHES 0, DISPLAY GAME OVER MESSAGE
 
-# TODO: ADD ABILITY TO CHANGE STARTING LIFE BETWEEN 20 AND 40
+# TODO: ADD RESTART GAME FUNCTIONALITY
 
 
 from machine import I2C, Pin
@@ -88,27 +88,7 @@ def update_hp_display(p1_hp, p2_hp):
     for lcd in lcds:
         display_hp(lcd, p1_hp, p2_hp)
     time.sleep(0.5)
-        
-        
 
-def change_hp(buttons, p1_hp, p2_hp): 
-    if(buttons[0].value()) == 0:
-        p1_hp += 1
-        update_hp_display(p1_hp, p2_hp)
-        game_loop(p1_hp, p2_hp)
-    elif(buttons[1].value()) == 0:
-        p1_hp -= 1
-        update_hp_display(p1_hp, p2_hp)
-        game_loop(p1_hp, p2_hp)
-    elif(buttons[2].value()) == 0:
-        p2_hp += 1
-        update_hp_display(p1_hp, p2_hp)
-        game_loop(p1_hp, p2_hp)
-    elif(buttons[3].value()) == 0:
-        p2_hp -= 1
-        update_hp_display(p1_hp, p2_hp)
-        game_loop(p1_hp, p2_hp)
-    
        
 def start_game(lcds, buttons, p1_hp, p2_hp):
     global selecting
@@ -122,7 +102,18 @@ def game_loop(p1_hp, p2_hp):
     global lcds
     global buttons
     while running:
-        change_hp(buttons, p1_hp, p2_hp)
+        if(buttons[0].value()) == 0:
+            p1_hp += 1
+            update_hp_display(p1_hp, p2_hp)
+        elif(buttons[1].value()) == 0:
+            p1_hp -= 1
+            update_hp_display(p1_hp, p2_hp)
+        elif(buttons[2].value()) == 0:
+            p2_hp += 1
+            update_hp_display(p1_hp, p2_hp)
+        elif(buttons[3].value()) == 0:
+            p2_hp -= 1
+            update_hp_display(p1_hp, p2_hp)
         game_over(lcds, p1_hp, p2_hp)
 
 
