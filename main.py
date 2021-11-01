@@ -132,7 +132,7 @@ def game_over(lcds, p1_hp, p2_hp):
             lcds[0].putstr("YOU WIN")
             lcds[1].putstr("YOU LOSE")
         time.sleep(3)
-        exit() # Not a proper stop, but stops the program anyway.
+        running = False
 
 
 
