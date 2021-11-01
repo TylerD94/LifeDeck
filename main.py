@@ -1,9 +1,6 @@
 # LIFEDECK V1.0
 # PROJECT STARTED HALLOWEEN 2021
-# CURRENT FEATURES ARE ABILITY TO RAISE AND LOWER HP VALUES
-# WHEN HP REACHES 0, DISPLAY GAME OVER MESSAGE
-
-# TODO: ADD RESTART GAME FUNCTIONALITY
+# ALLOWS FOR TWO PLAYER MTG GAMES WITH EITHER 20 OR 40 STARTING LIFE
 
 
 from machine import I2C, Pin
@@ -44,6 +41,8 @@ def set_up_buttons(buttons):
     return buttons
 
 def set_starting_hp(lcds, buttons):
+    for lcd in lcds:
+        lcd.clear()
     lcds[0].putstr('Starting life?')
     lcds[0].move_to(0,1)
     lcds[0].putstr ("20 40")
@@ -115,9 +114,33 @@ def game_loop(p1_hp, p2_hp):
             p2_hp -= 1
             update_hp_display(p1_hp, p2_hp)
         game_over(lcds, p1_hp, p2_hp)
+        
+
+def restart_game():
+    global lcds
+    global buttons
+    global selecting
+    for lcd in lcds:
+        lcd.clear()
+    while selecting:
+        lcds[0].putstr('Play again?')
+        lcds[0].move_to(0,1)
+        lcds[0].putstr('Yes No')
+        lcds[1].putstr('Waiting for')
+        lcds[1].move_to(0,1)
+        lcds[1].putstr('Player 1')
+        
+        while selecting:
+            if(buttons[0].value()) == 0:
+               set_starting_hp(lcds, buttons)
+            elif(buttons[1].value()) == 0:
+                for lcd in lcds:
+                    lcd.putstr('Goodbye')
+                selecting = False
 
 
 def game_over(lcds, p1_hp, p2_hp):
+    global selecting
     if(p1_hp == 0 or p2_hp == 0):
         for lcd in lcds:
             lcd.clear()
@@ -133,7 +156,8 @@ def game_over(lcds, p1_hp, p2_hp):
             lcds[1].putstr("YOU LOSE")
         time.sleep(3)
         running = False
-
+        selecting = True
+        restart_game()
 
 
 set_up_lcds(lcds)
