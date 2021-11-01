@@ -119,7 +119,6 @@ def start_game(lcds, buttons, p1_hp, p2_hp):
     game_loop(lcds, buttons, p1_hp, p2_hp)
 
 def game_loop(lcds, buttons, p1_hp, p2_hp):
-
     while running:
         change_hp(buttons, p1_hp, p2_hp)
         game_over(lcds, p1_hp, p2_hp)
