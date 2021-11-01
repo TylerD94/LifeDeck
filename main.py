@@ -95,19 +95,19 @@ def change_hp(buttons, p1_hp, p2_hp):
     if(buttons[0].value()) == 0:
         p1_hp += 1
         update_hp_display(p1_hp, p2_hp)
-        return(p1_hp, p2_hp)
+        game_loop(p1_hp, p2_hp)
     elif(buttons[1].value()) == 0:
         p1_hp -= 1
         update_hp_display(p1_hp, p2_hp)
-        return(p1_hp, p2_hp)
+        game_loop(p1_hp, p2_hp)
     elif(buttons[2].value()) == 0:
         p2_hp += 1
         update_hp_display(p1_hp, p2_hp)
-        return(p1_hp, p2_hp)
+        game_loop(p1_hp, p2_hp)
     elif(buttons[3].value()) == 0:
         p2_hp -= 1
         update_hp_display(p1_hp, p2_hp)
-        return(p1_hp, p2_hp)
+        game_loop(p1_hp, p2_hp)
     
        
 def start_game(lcds, buttons, p1_hp, p2_hp):
@@ -116,9 +116,11 @@ def start_game(lcds, buttons, p1_hp, p2_hp):
     global running
     running = True
     init_display_hp(p1_hp, p2_hp)
-    game_loop(lcds, buttons, p1_hp, p2_hp)
+    game_loop(p1_hp, p2_hp)
 
-def game_loop(lcds, buttons, p1_hp, p2_hp):
+def game_loop(p1_hp, p2_hp):
+    global lcds
+    global buttons
     while running:
         change_hp(buttons, p1_hp, p2_hp)
         game_over(lcds, p1_hp, p2_hp)
