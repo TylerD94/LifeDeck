@@ -3,16 +3,12 @@
 # CURRENT FEATURES ARE ABILITY TO RAISE AND LOWER HP VALUES
 # WHEN HP REACHES 0, DISPLAY GAME OVER MESSAGE
 
-# TODO: ADD ABILITY TO CHANGE STARTING LIFE BETWEEN 20 AND 40
+# TODO: ADD RESTART GAME FUNCTIONALITY
 
 
 from machine import I2C, Pin
 import time
 from pico_i2c_lcd import I2cLcd
-
-# Set base hp values
-p1_hp = 40
-p2_hp = 40
 
 # Empty array to hold LCD displays
 lcds = []
@@ -20,7 +16,7 @@ lcds = []
 # Empty array to hold buttons
 buttons = []
 
-
+running = False
 
 def set_up_lcds(lcds): # Find and set LCD display addresses    
     i2c_1 = I2C(0, sda=Pin(0), scl=Pin(1), freq=400000)
@@ -47,6 +43,24 @@ def set_up_buttons(buttons):
     
     return buttons
 
+def set_starting_hp(lcds, buttons):
+    lcds[0].putstr('Starting life?')
+    lcds[0].move_to(0,1)
+    lcds[0].putstr ("20 40")
+    lcds[1].putstr('Waiting for')
+    lcds[1].move_to(0,1)
+    lcds[1].putstr('Player 1')
+    
+    selecting = True
+    while selecting:
+        if(buttons[0].value()) == 0:
+           p1_hp = 20
+           p2_hp = 20
+           start_game(lcds, buttons, p1_hp, p2_hp)
+        elif(buttons[1].value()) == 0:
+            p1_hp = 40
+            p2_hp = 40
+            start_game(lcds, buttons, p1_hp, p2_hp)
 
 def display_version():
     for lcd in lcds:
@@ -74,24 +88,33 @@ def update_hp_display(p1_hp, p2_hp):
     for lcd in lcds:
         display_hp(lcd, p1_hp, p2_hp)
     time.sleep(0.5)
-        
-        
 
-def change_hp(buttons):
-    global p1_hp, p2_hp
-    
-    if(buttons[0].value() == 0):
-        p1_hp += 1
-        update_hp_display(p1_hp, p2_hp)
-    elif(buttons[1].value() == 0):
-        p1_hp -= 1
-        update_hp_display(p1_hp, p2_hp)
-    elif(buttons[2].value() == 0):
-        p2_hp += 1
-        update_hp_display(p1_hp, p2_hp)
-    elif(buttons[3].value() ==0):
-        p2_hp -= 1
-        update_hp_display(p1_hp, p2_hp)
+       
+def start_game(lcds, buttons, p1_hp, p2_hp):
+    global selecting
+    selecting = False
+    global running
+    running = True
+    init_display_hp(p1_hp, p2_hp)
+    game_loop(p1_hp, p2_hp)
+
+def game_loop(p1_hp, p2_hp):
+    global lcds
+    global buttons
+    while running:
+        if(buttons[0].value()) == 0:
+            p1_hp += 1
+            update_hp_display(p1_hp, p2_hp)
+        elif(buttons[1].value()) == 0:
+            p1_hp -= 1
+            update_hp_display(p1_hp, p2_hp)
+        elif(buttons[2].value()) == 0:
+            p2_hp += 1
+            update_hp_display(p1_hp, p2_hp)
+        elif(buttons[3].value()) == 0:
+            p2_hp -= 1
+            update_hp_display(p1_hp, p2_hp)
+        game_over(lcds, p1_hp, p2_hp)
 
 
 def game_over(lcds, p1_hp, p2_hp):
@@ -109,17 +132,13 @@ def game_over(lcds, p1_hp, p2_hp):
             lcds[0].putstr("YOU WIN")
             lcds[1].putstr("YOU LOSE")
         time.sleep(3)
-        exit() # Not a proper stop, but stops the program anyway.
+        running = False
 
 
 
 set_up_lcds(lcds)
 set_up_buttons(buttons)
 display_version()
-init_display_hp(p1_hp, p2_hp)
+set_starting_hp(lcds, buttons)
 
-
-while True:
-    change_hp(buttons)
-    game_over(lcds, p1_hp, p2_hp)
  
