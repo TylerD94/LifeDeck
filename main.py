@@ -14,6 +14,7 @@ lcds = []
 buttons = []
 
 running = False
+selecting = False
 
 
 def set_up_lcds(lcds): # Find and set LCD display addresses    
@@ -42,7 +43,7 @@ def set_up_buttons(buttons):
     return buttons
 
 
-def set_starting_hp(lcds, buttons):
+def set_starting_hp():
     for lcd in lcds:
         lcd.clear()
     lcds[0].putstr('Starting life?')
@@ -57,11 +58,13 @@ def set_starting_hp(lcds, buttons):
         if(buttons[0].value()) == 0:
            p1_hp = 20
            p2_hp = 20
-           start_game(lcds, buttons, p1_hp, p2_hp)
+           selecting = False
+           start_game(p1_hp, p2_hp)
         elif(buttons[1].value()) == 0:
             p1_hp = 40
             p2_hp = 40
-            start_game(lcds, buttons, p1_hp, p2_hp)
+            selecting = False
+            start_game(p1_hp, p2_hp)
 
 
 def display_version():
@@ -80,34 +83,23 @@ def init_display_hp(p1_hp, p2_hp):
         lcd.putstr(f"P1: {p1_hp}  P2: {p2_hp}")
 
 
-def display_hp(lcd, p1_hp, p2_hp):
-    lcd.putstr(f"P1: {p1_hp}  P2: {p2_hp}")
-
-
 def update_hp_display(p1_hp, p2_hp):  
     for lcd in lcds:
         lcd.clear()
         
     for lcd in lcds:
-        display_hp(lcd, p1_hp, p2_hp)
+        lcd.putstr(f"P1: {p1_hp}  P2: {p2_hp}")
         
     time.sleep(0.5)
 
        
-def start_game(lcds, buttons, p1_hp, p2_hp):
-    global selecting
-    selecting = False
-    
-    global running
-    running = True
-    
+def start_game(p1_hp, p2_hp):    
     init_display_hp(p1_hp, p2_hp)
     game_loop(p1_hp, p2_hp)
 
 
 def game_loop(p1_hp, p2_hp):
-    global lcds
-    global buttons
+    running = True
     
     while running:
         if(buttons[0].value()) == 0:
@@ -123,14 +115,10 @@ def game_loop(p1_hp, p2_hp):
             p2_hp -= 1
             update_hp_display(p1_hp, p2_hp)
         
-        game_over(lcds, p1_hp, p2_hp)
+        game_over(running, p1_hp, p2_hp)
         
 
-def restart_game():
-    global lcds
-    global buttons
-    global selecting
-    
+def restart_game(selecting):    
     for lcd in lcds:
         lcd.clear()
         
@@ -143,18 +131,16 @@ def restart_game():
         
     while selecting:       
         if(buttons[0].value()) == 0:
-           set_starting_hp(lcds, buttons)
+           set_starting_hp()
         elif(buttons[1].value()) == 0:
             for lcd in lcds:
                 lcd.clear()
                 lcd.putstr('Goodbye')
             selecting = False
-            exit()
+            quit()
 
 
-def game_over(lcds, p1_hp, p2_hp):
-    global selecting
-    
+def game_over(running, p1_hp, p2_hp): 
     if(p1_hp == 0 or p2_hp == 0):
         for lcd in lcds:
             lcd.clear()
@@ -173,11 +159,11 @@ def game_over(lcds, p1_hp, p2_hp):
         
         running = False
         selecting = True
-        restart_game()
+        restart_game(selecting)
 
 
 set_up_lcds(lcds)
 set_up_buttons(buttons)
 display_version()
-set_starting_hp(lcds, buttons)
+set_starting_hp()
 
