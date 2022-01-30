@@ -82,7 +82,7 @@ def init_display_hp(p1_hp, p2_hp):
 
 def update_hp_display(p1_hp, p2_hp):  
     for lcd in lcds:
-        lcd.clear()
+        lcd.move_to(0,0)
         
     for lcd in lcds:
         lcd.putstr(f"P1: {p1_hp}  P2: {p2_hp}")
@@ -105,7 +105,8 @@ def game_loop(p1_hp, p2_hp):
         elif(buttons[1].value()) == 0:
             p1_hp -= 1
             update_hp_display(p1_hp, p2_hp)
-        elif(buttons[2].value()) == 0:
+            
+        if(buttons[2].value()) == 0:
             p2_hp += 1
             update_hp_display(p1_hp, p2_hp)
         elif(buttons[3].value()) == 0:
