@@ -69,7 +69,7 @@ def set_starting_hp():
 
 def display_version():
     for lcd in lcds:
-        lcd.putstr("LifeDeck V1.0")
+        lcd.putstr("LifeDeck V1.1")
         
     time.sleep(2)
 
@@ -90,7 +90,7 @@ def update_hp_display(p1_hp, p2_hp):
     for lcd in lcds:
         lcd.putstr(f"P1: {p1_hp}  P2: {p2_hp}")
         
-    time.sleep(0.5)
+    time.sleep(0.05)
 
        
 def start_game(p1_hp, p2_hp):    
