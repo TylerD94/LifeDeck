@@ -1,6 +1,7 @@
-# LIFEDECK V1.0
+# LIFEDECK V1.1
 # PROJECT STARTED HALLOWEEN 2021
 # ALLOWS FOR TWO PLAYER MTG GAMES WITH EITHER 20 OR 40 STARTING LIFE
+VERSION_NUMBER = 1.1
 
 
 from machine import I2C, Pin
@@ -69,7 +70,7 @@ def set_starting_hp():
 
 def display_version():
     for lcd in lcds:
-        lcd.putstr("LifeDeck V1.1")
+        lcd.putstr(f"LifeDeck V{VERSION_NUMBER}")
         
     time.sleep(2)
 
