@@ -29,8 +29,6 @@ def set_up_lcds(lcds): # Find and set LCD display addresses
     lcd_2 = I2cLcd(i2c_2, I2C_ADDR_2, 2, 16) 
     
     lcds.extend((lcd_1, lcd_2))
-    
-    return lcds
 
 
 def set_up_buttons(buttons):
@@ -40,8 +38,6 @@ def set_up_buttons(buttons):
     p2_down_btn = Pin(15, Pin.IN, Pin.PULL_UP)
     
     buttons.extend((p1_up_btn, p1_down_btn, p2_up_btn, p2_down_btn))
-    
-    return buttons
 
 
 def set_starting_hp():
